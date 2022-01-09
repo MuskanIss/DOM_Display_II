@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>DOM Display II</title>
+    <style>
+      body {
+        background-color: black;
+        color: white;
+        min-height: 100vh;
+      }
+      table,
+      #table th,
+      #table td {
+        border: 1px solid white;
+      }
+      h1,
+      form,
+      body > div,
+      table {
+        margin: 25px auto;
+        text-align: center;
+      }
+      form {
+        width: fit-content;
+        padding: 20px;
+        border: 1px solid white;
+      }
+      #asc {
+        margin-right: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Fill up the details</h1>
+    <form>
+      <table>
+        <tr>
+          <td><label for="Ename">Employee Name:</label></td>
+          <td>
+            <input
+              type="text"
+              id="Ename"
+              name="Ename"
+              placeholder="Enter your Name"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td><label for="Dname">Select your department:</label></td>
+          <td>
+            <select name="Dname" id="Dname">
+              <option value="Marketing">Marketing</option>
+              <option value="Finance">Finance</option>
+              <option value="Sales">Sales</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="SalesYear1">Sales year 1:</label></td>
+          <td>
+            <input
+              type="number"
+              id="SalesYear1"
+              name="SalesYear1"
+              placeholder="Enter your sales for year 1"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td><label for="SalesYear2">Sales year 2:</label></td>
+          <td>
+            <input
+              type="number"
+              id="SalesYear2"
+              name="SalesYear2"
+              placeholder="Enter your sales for year 2"
+            />
+          </td>
+        </tr>
+      </table>
+      <p id="Error"></p>
+      <div>
+        <input type="submit" />
+      </div>
+    </form>
+    <table id="table">
+      <thead>
+        <tr>
+          <th>Employee Name</th>
+          <th>Department Name</th>
+          <th>Sales for year 1</th>
+          <th>Sales for year 2</th>
+          <th>Average Yearly Sales</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div>
+      <button id="Asc">Arrange in ascending order</button>
+      <button id="Desc">Arrange in descending order</button>
+    </div>
+    <script>
+      var form = document.querySelector("form");
+      form.addEventListener("submit", onFormSubmission);
+      var err = document.querySelector("#Error");
+      err.style.color = "red";
+      function onFormSubmission(event) {
+        event.preventDefault();
+        var Ename = document.querySelector("#Ename").value;
+        var Dname = document.querySelector("#Dname").value;
+        var SalesYear1 = document.querySelector("#SalesYear1").value;
+        var SalesYear2 = document.querySelector("#SalesYear2").value;
+        if (Ename === "" || SalesYear1 === "" || SalesYear2 === "") {
+          err.textContent = "All fields are required!!!!";
+          return;
+        }
+        if (Number(SalesYear1) < 0 || Number(SalesYear2) < 0) {
+          err.textContent = "Sales cannot be in negative!!!!";
+          return;
+        }
+        err.textContent = "";
+        var tr = document.createElement("tr");
+        var td1 = document.createElement("td");
+        var td2 = document.createElement("td");
+        var td3 = document.createElement("td");
+        var td4 = document.createElement("td");
+        var td5 = document.createElement("td");
+        td1.textContent = Ename;
+        td2.textContent = Dname;
+        td3.textContent = SalesYear1 + " units";
+        td4.textContent = SalesYear2 + " units";
+        td5.textContent = (Number(SalesYear1) + Number(SalesYear2)) / 2;
+        td5.setAttribute("class", "avgSales");
+        tr.append(td1, td2, td3, td4, td5);
+        document.querySelector("#table tbody").appendChild(tr);
+      }
+      var asc = document.querySelector("#Asc");
+      var desc = document.querySelector("#Desc");
+      asc.addEventListener("click", ascOrder);
+      desc.addEventListener("click", descOrder);
+      function ascOrder() {
+        var n = document.querySelectorAll(".avgSales");
+        var tr = document.querySelectorAll("#table tr td");
+        for (var i = 0; i < n.length - 1; i++) {
+          var min = Number(n[i].textContent);
+          var index = i;
+          for (var j = i; j < n.length; j++) {
+            if (Number(n[j].textContent) < min) {
+              min = Number(n[j].textContent);
+              index = j;
+            }
+          }
+          switchRow(i, index, n, tr);
+        }
+      }
+      function descOrder() {
+        var n = document.querySelectorAll(".avgSales");
+        var tr = document.querySelectorAll("#table tr td");
+        for (var i = 0; i < n.length - 1; i++) {
+          var max = Number(n[i].textContent);
+          var index = i;
+          for (var j = i; j < n.length; j++) {
+            if (Number(n[j].textContent) > max) {
+              max = Number(n[j].textContent);
+              index = j;
+            }
+          }
+          switchRow(i, index, n, tr);
+        }
+      }
+      function switchRow(i, j, arrSales, arrRow) {
+        var arr = [];
+        for (var k = 0; k < 5; k++) {
+          var val = arrRow[k + i * 5].textContent;
+          arrRow[k + i * 5].textContent = arrRow[k + j * 5].textContent;
+          arrRow[k + j * 5].textContent = val;
+        }
+      }
+    </script>
+  </body>
+</html>
